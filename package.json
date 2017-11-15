@@ -1,0 +1,24 @@
+{
+  "name": "hctf_final_platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Last-Order/hctf_final_platform.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Last-Order/hctf_final_platform/issues"
+  },
+  "homepage": "https://github.com/Last-Order/hctf_final_platform#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "redis": "^2.8.0",
+    "socket.io": "^2.0.4"
+  }
+}
