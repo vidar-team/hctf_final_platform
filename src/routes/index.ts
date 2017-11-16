@@ -1,8 +1,12 @@
-import {Router} from "express";
-let router: Router = Router();
+import {Request, Response, Router} from "express";
+import Team from "../controllers/team";
 
-router.get("/", (request, response) => {
+const router: Router = Router();
+
+router.get("/", (request: Request, response: Response) => {
     response.send("Hello World");
 });
+
+router.post("/team/register", Team.register);
 
 export default router;
