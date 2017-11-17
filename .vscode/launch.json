@@ -8,11 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/src\\routes\\index.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
-            ]
+            "program": "${workspaceFolder}/dist/index.js"
         }
     ]
 }
