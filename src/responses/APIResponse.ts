@@ -7,7 +7,7 @@ class APIResponse {
             },
         };
     }
-    public static success(data: { [key: string]: string }) {
+    public static success(data: { [key: string]: any }) {
         return data;
     }
 }

@@ -1,5 +1,7 @@
 import {Request, Response, Router} from "express";
+import Challenge from "../controllers/Challenge";
 import Team from "../controllers/Team";
+import verifyAdmin from "../middlewares/VerifyAdmin";
 
 const router: Router = Router();
 
@@ -7,7 +9,12 @@ router.get("/", (request: Request, response: Response) => {
     response.send("Hello World");
 });
 
-router.post("/team/register", Team.register.bind(Team));
-router.post("/team/login", Team.login.bind(Team));
+router.post("/Team/register", Team.register.bind(Team));
+router.post("/Team/login", Team.login.bind(Team));
+router.get("/Challenge/list", verifyAdmin, Challenge.list.bind(Challenge));
+router.post("/Challenge/create", verifyAdmin, Challenge.create.bind(Challenge));
+router.post("/Admin/index", verifyAdmin, (request: Request, response: Response) => {
+    response.send("Admin Index");
+});
 
 export default router;

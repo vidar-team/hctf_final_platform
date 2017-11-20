@@ -1,14 +1,12 @@
 import * as bcrypt from "bcryptjs";
 import * as crypto from "crypto";
 import { Request, Response } from "express";
-import * as redis from "redis";
 import APIResponse from "../responses/APIResponse";
+import BaseController from "./BaseController";
 
-export class Team {
-    public redisClient: redis.RedisClient;
-
+export class Team extends BaseController {
     constructor() {
-        this.redisClient = redis.createClient();
+        super();
     }
     /**
      * 注册用户
