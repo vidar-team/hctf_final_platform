@@ -6,6 +6,6 @@ export default function verifyAdmin(request: Request, response: Response, next: 
     if (request.query.token === adminToken || request.body.token === adminToken) {
         next();
     } else {
-        return response.status(403).json(APIResponse.error("premission_denied", "权限不足以执行此操作"));
+        return response.status(403).json(APIResponse.error("permission_denied", "权限不足以执行此操作"));
     }
 }
