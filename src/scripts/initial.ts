@@ -5,10 +5,11 @@ import * as bcrypt from "bcryptjs";
 import * as crypto from "crypto";
 import * as redis from "redis";
 
-const challengeNames = ["中文", "c2"];
-const teamNames = ["Team1", "Team2", "Team3"];
-const startTime = new Date("2017-12-16 08:00:00");
-const endTime = new Date("2017-12-16 20:00:00");
+const challengeNames = ["中文", "c2"];  // 题目名列表
+const teamNames = ["Team1", "Team2", "Team3"]; // 队伍名列表
+const startTime = new Date("2017-12-16 08:00:00"); // 比赛开始时间
+const endTime = new Date("2017-12-16 20:00:00"); // 比赛结束时间
+const flagRefreshInterval = 15 * 60 * 1000; // Flag 刷新间隔 毫秒
 
 const redisClient = redis.createClient();
 
@@ -27,11 +28,14 @@ const checkFinish = () => {
  * @param teamName 队伍名
  * @param challengeName 问题名
  */
-function insertFlag(flag: string, teamName: string, challengeName: string): Promise<{}> {
+// tslint:disable-next-line:max-line-length
+function insertFlag(flag: string, teamName: string, challengeName: string, validFrom: string, validUntil: string): Promise<{}> {
     return new Promise<{}>((resolve, reject) => {
         redisClient.hmset(`flag:${flag}`, {
             teamName,
             challengeName,
+            validFrom,
+            validUntil,
         }, (error) => {
             resolve();
         });
@@ -44,8 +48,11 @@ async function generateFlags(): Promise<{}> {
     return new Promise<{}>(async (resolve, reject) => {
         for (const teamName of teamNames) {
             for (const challengeName of challengeNames) {
-                const flag = crypto.randomBytes(32).toString("hex");
-                await insertFlag(flag, teamName, challengeName);
+                for (let t = startTime.valueOf(); t < endTime.valueOf(); t += flagRefreshInterval) {
+                    const flag = crypto.randomBytes(32).toString("hex");
+                    // tslint:disable-next-line:max-line-length
+                    await insertFlag(flag, teamName, challengeName, new Date(t + 1).toISOString(), new Date(t + flagRefreshInterval).toISOString());
+                }
             }
         }
         resolve();
