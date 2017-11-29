@@ -26,14 +26,18 @@ export class Team extends BaseController {
                 return response.status(403).json(APIResponse.error("duplicated_name", "队伍名已经注册"));
             } else {
                 this.redisClient.incr("teams:count", (incrError, teamId) => {
+                    const token = crypto.randomBytes(20).toString("hex");
                     this.redisClient.hmset(`team:${teamId}`, {
                         name: request.body.name,
                         password: bcrypt.hashSync(request.body.password),
-                        token: crypto.randomBytes(20).toString("hex"),
+                        token,
                     }, () => {
-                        this.redisClient.hset("name.team.mapping", request.body.name, teamId.toString());
-                        return response.json({
-                            status: "ok",
+                        this.redisClient.hset("name.team.mapping", request.body.name, teamId.toString(), () => {
+                            this.redisClient.hset("token.teamname.mapping", token, request.body.name, () => {
+                                return response.json({
+                                    status: "ok",
+                                });
+                            });
                         });
                     });
                 });

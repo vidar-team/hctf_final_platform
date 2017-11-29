@@ -1,9 +1,14 @@
+import { Request, Response} from "express";
 import BaseController from "./BaseController";
 
-class Flag extends BaseController {
+export class Flag extends BaseController {
     constructor() {
         super();
     }
+
+    public submit(request: Request, response: Response): void {
+
+    }
 }
 
-export default Flag;
+export default new Flag();
