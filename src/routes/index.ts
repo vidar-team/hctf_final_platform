@@ -18,6 +18,6 @@ router.post("/Challenge/create", verifyAdmin, Challenge.create.bind(Challenge));
 router.post("/Admin/index", verifyAdmin, (request: Request, response: Response) => {
     response.send("Admin Index");
 });
-router.post("/Flag/submit", verifyToken , Flag.submit.bind(Flag));
+router.post("/Flag/submit", verifyToken, Flag.submit.bind(Flag));
 
 export default router;

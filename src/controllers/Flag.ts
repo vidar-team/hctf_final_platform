@@ -19,6 +19,10 @@ export class Flag extends BaseController {
         } else {
             this.redisClient.hgetall(`flag:${flag}`, (error, result) => {
                 if (result === null) {
+                    this.redisClient.publish("message", JSON.stringify({
+                        type: "log",
+                        data: `队伍 ${teamName} 提交 Flag: ${flag}`,
+                    }));
                     response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
                 } else {
                     const nowTime = new Date();
