@@ -3,7 +3,7 @@ import Challenge from "../controllers/Challenge";
 import Flag from "../controllers/Flag";
 import Team from "../controllers/Team";
 import verifyAdmin from "../middlewares/VerifyAdmin";
-import verifyToken from "../middlewares/verifyToken";
+import verifyToken from "../middlewares/VerifyToken";
 
 const router: Router = Router();
 
