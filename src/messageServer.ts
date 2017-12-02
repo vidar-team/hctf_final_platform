@@ -11,10 +11,11 @@ httpServer.listen(4000);
 
 const redisClient = redis.createClient();
 const socketServer = socketio(httpServer);
+
+redisClient.subscribe("message");
+
 socketServer.on("connection", (socket) => {
-    redisClient.subscribe("message", () => {
-        redisClient.on("message", (error, message) => {
-            socket.broadcast.emit("message", message);
-        });
+    redisClient.on("message", (error, message) => {
+        socket.emit("message", message);
     });
 });

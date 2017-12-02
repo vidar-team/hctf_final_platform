@@ -101,6 +101,7 @@ if (teamNames.length > 0) {
                         name: teamName,
                         password,
                         token,
+                        score: 0,
                     }, () => {
                         redisClient.hset("name.team.mapping", teamName, teamId.toString(), () => {
                             redisClient.hset("token.teamname.mapping", token, teamName, () => {
