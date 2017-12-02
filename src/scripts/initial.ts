@@ -7,8 +7,8 @@ import * as redis from "redis";
 
 const challengeNames = ["中文", "c2"];  // 题目名列表
 const teamNames = ["Team1", "Team2", "Team3"]; // 队伍名列表
-const startTime = new Date("2017-12-16 08:00:00"); // 比赛开始时间
-const endTime = new Date("2017-12-16 20:00:00"); // 比赛结束时间
+const startTime = new Date("2017-12-02 23:00:00"); // 比赛开始时间
+const endTime = new Date("2017-12-02 23:30:00"); // 比赛结束时间
 const flagRefreshInterval = 15 * 60 * 1000; // Flag 刷新间隔 毫秒
 
 const redisClient = redis.createClient();

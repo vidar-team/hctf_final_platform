@@ -20,8 +20,7 @@ export class Flag extends BaseController {
         } else {
             this.redisClient.hgetall(`flag:${flag}`, (error, result) => {
                 if (result === null) {
-                    console.log(2);
-                    Logger.info("flag:submit", {
+                    Logger.debug("flag:submit", {
                         teamName,
                         flag,
                         status: "incorrect",
@@ -34,16 +33,27 @@ export class Flag extends BaseController {
                     } else {
                         // 成功提交 Flag
                         // 查重
-                        this.redisClient.hmget(`log:flag:submit:${teamName}-${flag}`, (hmgetError, flagSubmitLog) => {
+                        this.redisClient.hgetall(`log:flag:submit:${teamName}-${flag}`, (hmgetError, flagSubmitLog) => {
                             if (flagSubmitLog !== null) {
+                                Logger.debug("flag:submit", {
+                                    teamName,
+                                    flag,
+                                    status: "duplicated",
+                                });
                                 response.status(403).json(APIResponse.error("duplicated_flag", "Flag 已经提交过"));
                             } else {
                                 this.redisClient.hmset(`log:flag:submit:${teamName}-${flag}`, {
                                     time: new Date().toISOString(),
                                 });
+                                Logger.info("flag:submit", {
+                                    teamName,
+                                    flag,
+                                    target: result.teamName,
+                                    status: "correct",
+                                });
+                                response.json(APIResponse.success(result));
                             }
                         });
-                        response.json(APIResponse.success(result));
                     }
                 }
             });
