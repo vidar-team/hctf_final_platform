@@ -51,6 +51,9 @@ export class Flag extends BaseController {
                                     target: result.teamName,
                                     status: "correct",
                                 });
+                                // 加分
+                                this.increaseTeamScore(teamName, 10);
+                                this.increaseTeamScore(result.teamName, -10);
                                 response.json(APIResponse.success(result));
                             }
                         });
@@ -58,6 +61,19 @@ export class Flag extends BaseController {
                 }
             });
         }
+    }
+
+    private increaseTeamScore(teamName: string, inc: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.redisClient.hget("name.team.mapping", teamName, (hgetError, teamId) => {
+                this.redisClient.hgetall(`team:${teamId}`, (hgetallError, teamInfo) => {
+                    const score = parseInt(teamInfo.score, 10) + inc;
+                    this.redisClient.hmset(`team:${teamId}`, "score", score.toString(), (hmsetError) => {
+                        resolve();
+                    });
+                });
+            });
+        });
     }
 }
 
