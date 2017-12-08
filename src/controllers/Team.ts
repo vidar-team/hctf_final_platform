@@ -8,6 +8,24 @@ export class Team extends BaseController {
     constructor() {
         super();
     }
+
+    public list(request: Request, response: Response): void {
+        this.redisClient.scan("0", "MATCH", "team:*", "COUNT", "10000", async (error, result) => {
+            const teams = [];
+
+            for (const teamKey of result[1]) {
+                const info = await this.getTeamInfo(teamKey);
+                delete info.password;
+                delete info.token;
+                teams.push(info);
+            }
+
+            return response.json(teams.sort((a, b) => {
+                return b.score - a.score;
+            }));
+        });
+    }
+
     /**
      * 注册用户
      * @param request
@@ -68,6 +86,17 @@ export class Team extends BaseController {
                     delete team.password;
                     return response.json(APIResponse.success(team));
                 }
+            });
+        });
+    }
+    /**
+     * 获得队伍信息
+     * @param teamId 队伍 ID
+     */
+    private getTeamInfo(key: string): Promise<{[key: string]: string}> {
+        return new Promise((resolve, reject) => {
+            this.redisClient.hgetall(key, (error, teamInfo) => {
+                resolve(teamInfo);
             });
         });
     }

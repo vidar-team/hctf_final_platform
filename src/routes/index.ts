@@ -13,6 +13,7 @@ router.get("/", (request: Request, response: Response) => {
 
 router.post("/Team/register", Team.register.bind(Team));
 router.post("/Team/login", Team.login.bind(Team));
+router.get("/Team/list", Team.list.bind(Team));
 router.get("/Challenge/list", verifyAdmin, Challenge.list.bind(Challenge));
 router.post("/Challenge/create", verifyAdmin, Challenge.create.bind(Challenge));
 router.post("/Admin/index", verifyAdmin, (request: Request, response: Response) => {
