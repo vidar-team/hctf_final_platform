@@ -62,8 +62,12 @@ export class Flag extends BaseController {
             });
         }
     }
-
-    private increaseTeamScore(teamName: string, inc: number): Promise<void> {
+    /**
+     * 增加分数
+     * @param teamName 队伍名
+     * @param inc 增加分数
+     */
+    private increaseTeamScore(teamName: string, inc: number): Promise<{}> {
         return new Promise((resolve, reject) => {
             this.redisClient.hget("name.team.mapping", teamName, (hgetError, teamId) => {
                 this.redisClient.hgetall(`team:${teamId}`, (hgetallError, teamInfo) => {

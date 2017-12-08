@@ -15,7 +15,15 @@ const socketServer = socketio(httpServer);
 redisClient.subscribe("message");
 
 socketServer.on("connection", (socket) => {
+    const ADMIN_KEY = "xxxxx";
+
     redisClient.on("message", (error, message) => {
         socket.emit("message", message);
     });
+
+    if (socket.handshake.query && socket.handshake.query.key === ADMIN_KEY) {
+        redisClient.on("debug", (error, message) => {
+            socket.emit("debug", message);
+        });
+    }
 });
