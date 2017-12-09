@@ -20,7 +20,7 @@ export class Flag extends BaseController {
         } else {
             this.redisClient.hgetall(`flag:${flag}`, (error, result) => {
                 if (result === null) {
-                    Logger.debug("flag:submit", {
+                    Logger.debug("flag:submit", "admin", {
                         teamName,
                         flag,
                         status: "incorrect",
@@ -28,14 +28,16 @@ export class Flag extends BaseController {
                     response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
                 } else {
                     const nowTime = new Date();
-                    if (nowTime < new Date(result.validFrom) || nowTime > new Date(result.validTo)) {
+                    Logger.debug("flag:submit", "admin", {});
+                    // tslint:disable-next-line:max-line-length
+                    if (nowTime.valueOf() < new Date(result.validFrom).valueOf() || nowTime.valueOf() > new Date(result.validUntil).valueOf()) {
                         response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
                     } else {
                         // 成功提交 Flag
                         // 查重
                         this.redisClient.hgetall(`log:flag:submit:${teamName}-${flag}`, (hmgetError, flagSubmitLog) => {
                             if (flagSubmitLog !== null) {
-                                Logger.debug("flag:submit", {
+                                Logger.debug("flag:submit", "admin", {
                                     teamName,
                                     flag,
                                     status: "duplicated",
@@ -45,7 +47,7 @@ export class Flag extends BaseController {
                                 this.redisClient.hmset(`log:flag:submit:${teamName}-${flag}`, {
                                     time: new Date().toISOString(),
                                 });
-                                Logger.info("flag:submit", {
+                                Logger.info("flag:submit", "admin", {
                                     teamName,
                                     flag,
                                     target: result.teamName,

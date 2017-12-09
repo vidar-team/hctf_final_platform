@@ -8,17 +8,17 @@ export enum LogLevel {
 }
 
 class Logger {
-    public static error(type: string, data: {[key: string]: any}) {
-        return new Logger().log(LogLevel.ERROR, type, data);
+    public static error(type: string, channel: string = "public", data: {[key: string]: any}) {
+        return new Logger().log(LogLevel.ERROR, type, channel, data);
     }
-    public static warning(type: string, data: {[key: string]: any}) {
-        return new Logger().log(LogLevel.WARNING, type, data);
+    public static warning(type: string, channel: string = "public", data: {[key: string]: any}) {
+        return new Logger().log(LogLevel.WARNING, type, channel, data);
     }
-    public static info(type: string, data: {[key: string]: any}) {
-        return new Logger().log(LogLevel.INFO, type, data);
+    public static info(type: string, channel: string = "public", data: {[key: string]: any}) {
+        return new Logger().log(LogLevel.INFO, type, channel, data);
     }
-    public static debug(type: string, data: {[key: string]: any}) {
-        return new Logger().log(LogLevel.DEBUG, type, data);
+    public static debug(type: string, channel: string = "public", data: {[key: string]: any}) {
+        return new Logger().log(LogLevel.DEBUG, type, channel, data);
     }
     public redisClient: redis.RedisClient;
 
@@ -26,8 +26,8 @@ class Logger {
         this.redisClient = redis.createClient();
     }
 
-    public log(level: LogLevel, type: string, data: {[key: string]: any}) {
-        this.redisClient.publish("message", JSON.stringify({
+    public log(level: LogLevel, type: string, channel: string = "public", data: {[key: string]: any}) {
+        this.redisClient.publish(channel, JSON.stringify({
             type,
             level,
             data,

@@ -1,6 +1,7 @@
 import {Request, Response, Router} from "express";
 import Challenge from "../controllers/Challenge";
 import Flag from "../controllers/Flag";
+import System from "../controllers/SystemController";
 import Team from "../controllers/Team";
 import verifyAdmin from "../middlewares/VerifyAdmin";
 import verifyToken from "../middlewares/VerifyToken";
@@ -20,5 +21,6 @@ router.post("/Admin/index", verifyAdmin, (request: Request, response: Response) 
     response.send("Admin Index");
 });
 router.post("/Flag/submit", verifyToken, Flag.submit.bind(Flag));
+router.get("/System/info", System.getSystemInfo.bind(System));
 
 export default router;

@@ -16,14 +16,15 @@ redisClient.subscribe("message");
 
 socketServer.on("connection", (socket) => {
     const ADMIN_KEY = "xxxxx";
+    redisClient.subscribe("public");
 
-    redisClient.on("message", (error, message) => {
+    if (socket.handshake.query && socket.handshake.query.key === ADMIN_KEY) {
+        // is admin
+        redisClient.subscribe("admin");
+    }
+
+    redisClient.on("message", (channel, message) => {
         socket.emit("message", message);
     });
 
-    if (socket.handshake.query && socket.handshake.query.key === ADMIN_KEY) {
-        redisClient.on("debug", (error, message) => {
-            socket.emit("debug", message);
-        });
-    }
 });
