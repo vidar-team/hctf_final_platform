@@ -1,8 +1,8 @@
 import {Request, Response, Router} from "express";
-import Challenge from "../controllers/Challenge";
-import Flag from "../controllers/Flag";
+import Challenge from "../controllers/ChallengeController";
+import Flag from "../controllers/FlagController";
 import System from "../controllers/SystemController";
-import Team from "../controllers/Team";
+import Team from "../controllers/TeamController";
 import verifyAdmin from "../middlewares/VerifyAdmin";
 import verifyToken from "../middlewares/VerifyToken";
 

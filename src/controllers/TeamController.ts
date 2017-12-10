@@ -101,14 +101,14 @@ export class Team extends BaseController {
             response.status(400).json(APIResponse.error("missing_parameters", "缺少必要参数"));
             return;
         }
-        Logger.info("team:score", "public", {
-            teamName: request.body.teamName,
-            inc: request.body.inc,
-        });
         this.redisClient.hget("name.team.mapping", request.body.teamName, (hgetError, teamId) => {
             if (!teamId) {
                 response.status(404).json(APIResponse.error("team_not_found", "队伍不存在"));
             } else {
+                Logger.info("team:score", "public", {
+                    teamName: request.body.teamName,
+                    inc: request.body.inc,
+                });
                 this.redisClient.hgetall(`team:${teamId}`, (hgetallError, teamInfo) => {
                     const score = parseInt(teamInfo.score, 10) + parseInt(request.body.inc, 10);
                     this.redisClient.hmset(`team:${teamId}`, "score", score.toString(), (hmsetError) => {
@@ -129,7 +129,7 @@ export class Team extends BaseController {
                 resolve(teamInfo);
             });
         });
-    } 
+    }
 }
 
 export default new Team();

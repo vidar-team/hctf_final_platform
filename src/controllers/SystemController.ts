@@ -28,7 +28,9 @@ export class System extends BaseController {
         this.redisClient.scan("0", "MATCH", "log:public:*", "COUNT", "10000", (error, result) => {
             if (result[1].length > 0) {
                 this.redisClient.mget(result[1], (mgetError, logs) => {
-                    response.json(APIResponse.success(logs));
+                    response.json(APIResponse.success(logs.map((log) => {
+                        return JSON.parse(log);
+                    })));
                 });
             } else  {
                 response.json(APIResponse.success([]));
