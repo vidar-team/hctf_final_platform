@@ -19,6 +19,22 @@ export class System extends BaseController {
             round,
         }));
     }
+    /**
+     * 获得公告日志
+     * @param request
+     * @param response
+     */
+    public getPublicLogs(request: Request, response: Response): void {
+        this.redisClient.scan("0", "MATCH", "log:public:*", "COUNT", "10000", (error, result) => {
+            if (result[1].length > 0) {
+                this.redisClient.mget(result[1], (mgetError, logs) => {
+                    response.json(APIResponse.success(logs));
+                });
+            } else  {
+                response.json(APIResponse.success([]));
+            }
+        });
+    }
 }
 
 export default new System();

@@ -24,6 +24,7 @@ socketServer.on("connection", (socket) => {
     }
 
     redisClient.on("message", (channel, message) => {
+        console.log(message);
         socket.emit("message", message);
     });
 

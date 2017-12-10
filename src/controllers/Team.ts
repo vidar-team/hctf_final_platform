@@ -2,6 +2,7 @@ import * as bcrypt from "bcryptjs";
 import * as crypto from "crypto";
 import { Request, Response } from "express";
 import APIResponse from "../responses/APIResponse";
+import Logger from "../services/Logger";
 import BaseController from "./BaseController";
 
 export class Team extends BaseController {
@@ -89,17 +90,46 @@ export class Team extends BaseController {
             });
         });
     }
+
+    /**
+     * 增加分数
+     * @param request
+     * @param response
+     */
+    public increaseTeamScore(request: Request, response: Response): void {
+        if (!request.body.teamName || !request.body.inc) {
+            response.status(400).json(APIResponse.error("missing_parameters", "缺少必要参数"));
+            return;
+        }
+        Logger.info("team:score", "public", {
+            teamName: request.body.teamName,
+            inc: request.body.inc,
+        });
+        this.redisClient.hget("name.team.mapping", request.body.teamName, (hgetError, teamId) => {
+            if (!teamId) {
+                response.status(404).json(APIResponse.error("team_not_found", "队伍不存在"));
+            } else {
+                this.redisClient.hgetall(`team:${teamId}`, (hgetallError, teamInfo) => {
+                    const score = parseInt(teamInfo.score, 10) + parseInt(request.body.inc, 10);
+                    this.redisClient.hmset(`team:${teamId}`, "score", score.toString(), (hmsetError) => {
+                        response.json(APIResponse.success({}));
+                    });
+                });
+            }
+        });
+    }
+
     /**
      * 获得队伍信息
      * @param teamId 队伍 ID
      */
-    private getTeamInfo(key: string): Promise<{[key: string]: string}> {
+    private getTeamInfo(key: string): Promise<{ [key: string]: string }> {
         return new Promise((resolve, reject) => {
             this.redisClient.hgetall(key, (error, teamInfo) => {
                 resolve(teamInfo);
             });
         });
-    }
+    } 
 }
 
 export default new Team();

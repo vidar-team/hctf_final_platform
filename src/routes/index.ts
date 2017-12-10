@@ -15,6 +15,7 @@ router.get("/", (request: Request, response: Response) => {
 router.post("/Team/register", Team.register.bind(Team));
 router.post("/Team/login", Team.login.bind(Team));
 router.get("/Team/list", Team.list.bind(Team));
+router.post("/Team/incScore", verifyAdmin, Team.increaseTeamScore.bind(Team));
 router.get("/Challenge/list", verifyAdmin, Challenge.list.bind(Challenge));
 router.post("/Challenge/create", verifyAdmin, Challenge.create.bind(Challenge));
 router.post("/Admin/index", verifyAdmin, (request: Request, response: Response) => {
@@ -22,5 +23,6 @@ router.post("/Admin/index", verifyAdmin, (request: Request, response: Response) 
 });
 router.post("/Flag/submit", verifyToken, Flag.submit.bind(Flag));
 router.get("/System/info", System.getSystemInfo.bind(System));
+router.get("/System/logs", System.getPublicLogs.bind(System));
 
 export default router;

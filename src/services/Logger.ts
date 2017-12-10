@@ -27,6 +27,11 @@ class Logger {
     }
 
     public log(level: LogLevel, type: string, channel: string = "public", data: {[key: string]: any}) {
+        this.redisClient.set(`log:${channel}:${new Date().valueOf().toString()}`, JSON.stringify({
+            type,
+            level,
+            data,
+        }));
         this.redisClient.publish(channel, JSON.stringify({
             type,
             level,

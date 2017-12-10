@@ -71,6 +71,10 @@ export class Flag extends BaseController {
      */
     private increaseTeamScore(teamName: string, inc: number): Promise<{}> {
         return new Promise((resolve, reject) => {
+            Logger.info("team:score", "public", {
+                teamName,
+                inc,
+            });
             this.redisClient.hget("name.team.mapping", teamName, (hgetError, teamId) => {
                 this.redisClient.hgetall(`team:${teamId}`, (hgetallError, teamInfo) => {
                     const score = parseInt(teamInfo.score, 10) + inc;
