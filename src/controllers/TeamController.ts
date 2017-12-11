@@ -108,6 +108,7 @@ export class Team extends BaseController {
                 Logger.info("team:score", "public", {
                     teamName: request.body.teamName,
                     inc: request.body.inc,
+                    time: new Date().toISOString(),
                 });
                 this.redisClient.hgetall(`team:${teamId}`, (hgetallError, teamInfo) => {
                     const score = parseInt(teamInfo.score, 10) + parseInt(request.body.inc, 10);

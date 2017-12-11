@@ -28,7 +28,6 @@ export class Flag extends BaseController {
                     response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
                 } else {
                     const nowTime = new Date();
-                    Logger.debug("flag:submit", "admin", {});
                     // tslint:disable-next-line:max-line-length
                     if (nowTime.valueOf() < new Date(result.validFrom).valueOf() || nowTime.valueOf() > new Date(result.validUntil).valueOf()) {
                         response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
@@ -74,6 +73,7 @@ export class Flag extends BaseController {
             Logger.info("team:score", "public", {
                 teamName,
                 inc,
+                time: new Date().toISOString(),
             });
             this.redisClient.hget("name.team.mapping", teamName, (hgetError, teamId) => {
                 this.redisClient.hgetall(`team:${teamId}`, (hgetallError, teamInfo) => {

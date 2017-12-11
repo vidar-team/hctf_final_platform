@@ -17,6 +17,8 @@ export class System extends BaseController {
         const round = Math.floor((nowTime.valueOf() - startTime.valueOf()) / flagRefreshInterval) + 1;
         response.json(APIResponse.success({
             round,
+            startTime: startTime.toISOString(),
+            endTime: endTime.toISOString(),
         }));
     }
     /**

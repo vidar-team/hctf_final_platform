@@ -36,6 +36,7 @@ class Logger {
             type,
             level,
             data,
+            time: new Date().toISOString(),
         }));
     }
 }
