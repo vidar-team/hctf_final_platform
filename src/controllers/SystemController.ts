@@ -39,6 +39,23 @@ export class System extends BaseController {
             }
         });
     }
+    /**
+     * 设定题目服务器状态
+     * @param request
+     * @param response
+     */
+    public setServerStatus(request: Request, response: Response): void {
+        const teamName = request.body.teamName;
+        const challengeName = request.body.challengeName;
+        const status = request.body.status;
+        if (!teamName || !challengeName || !status) {
+            response.status(400).json(APIResponse.error("missing_parameters", "缺少必要参数"));
+            return;
+        }
+        this.redisClient.set(`status:${teamName}:${challengeName}`, status, (error, result) => {
+            response.json(APIResponse.success({}));
+        });
+    }
 }
 
 export default new System();

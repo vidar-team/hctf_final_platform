@@ -14,7 +14,7 @@ const flagRefreshInterval = 15 * 60 * 1000; // Flag 刷新间隔 毫秒
 const redisClient = redis.createClient();
 
 let nowStep = 0;
-const totalStep = 5;
+const totalStep = 6;
 
 const checkFinish = () => {
     if (nowStep === totalStep) {
@@ -62,6 +62,18 @@ async function generateFlags(): Promise<{}> {
         resolve();
     });
 }
+/**
+ * 生成单条服务器状态记录
+ * @param teamName 队伍名
+ * @param challengeName 题目名
+ */
+async function generateServerStatus(teamName: string, challengeName: string): Promise<{}> {
+    return new Promise(async (resolve, reject) => {
+        redisClient.set(`status:${teamName}:${challengeName}`, "up", (error, result) => {
+            resolve();
+        });
+    });
+}
 
 const initialStartTime = new Date();
 
@@ -92,6 +104,9 @@ redisClient.set("time:end", endTime.toISOString(), (error) => {
     }
 });
 
+/**
+ * 生成队伍数据
+ */
 if (teamNames.length > 0) {
     for (const teamName of teamNames) {
         const password = bcrypt.hashSync(crypto.randomBytes(32).toString("hex"));
@@ -128,3 +143,13 @@ if (teamNames.length > 0) {
     console.log(`初始化队伍数据完成 [${++nowStep} / ${totalStep}]`);
     checkFinish();
 }
+
+(async () => {
+    for (const challengeName of challengeNames) {
+        for (const teamName of teamNames) {
+            await generateServerStatus(teamName, challengeName);
+        }
+    }
+    console.log(`初始化服务器状态数据完成 [${++nowStep} / ${totalStep}]`);
+    checkFinish();
+})();

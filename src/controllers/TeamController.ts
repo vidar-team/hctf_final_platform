@@ -9,7 +9,11 @@ export class Team extends BaseController {
     constructor() {
         super();
     }
-
+    /**
+     * 获得全部队伍信息
+     * @param request
+     * @param response
+     */
     public list(request: Request, response: Response): void {
         this.redisClient.scan("0", "MATCH", "team:*", "COUNT", "10000", async (error, result) => {
             const teams = [];
@@ -115,6 +119,31 @@ export class Team extends BaseController {
                     this.redisClient.hmset(`team:${teamId}`, "score", score.toString(), (hmsetError) => {
                         response.json(APIResponse.success({}));
                     });
+                });
+            }
+        });
+    }
+    /**
+     * 获得服务器状态
+     * @param request
+     * @param response
+     */
+    public getServerStatus(request: Request, response: Response): void {
+        const teamName = request.body.teamName;
+        this.redisClient.scan("0", "MATCH", `status:${teamName}:*`, "COUNT", "10000", (scanError, result) => {
+            console.log(result);
+            if (result[1].length === 0) {
+                return response.json(APIResponse.success([]));
+            } else {
+                this.redisClient.mget(result[1], (mgetError, status) => {
+                    const statusResult = [];
+                    status.forEach((challengeStatus, index) => {
+                        statusResult.push({
+                            challengeName: result[1][index].replace(new RegExp(`status:${teamName}:`), ""),
+                            status: challengeStatus,
+                        });
+                    });
+                    return response.json(APIResponse.success(statusResult));
                 });
             }
         });
