@@ -48,6 +48,7 @@ export class Flag extends BaseController {
                                 });
                                 Logger.info("flag:submit", "admin", {
                                     teamName,
+                                    challengeName: result.challengeName,
                                     flag,
                                     target: result.teamName,
                                     status: "correct",

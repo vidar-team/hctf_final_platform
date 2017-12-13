@@ -5,10 +5,12 @@ import * as bcrypt from "bcryptjs";
 import * as crypto from "crypto";
 import * as redis from "redis";
 
-const challengeNames = ["中文", "c2"];  // 题目名列表
-const teamNames = ["Team1", "Team2", "Team3"]; // 队伍名列表
+// tslint:disable-next-line:max-line-length
+const challengeNames = ["HYPERION"];  // 题目名列表
+// tslint:disable-next-line:max-line-length
+const teamNames = ["Team01", "Team02", "Team03", "Team04", "Team05", "Team06", "Team07", "Team08", "Team09", "Team10"]; // 队伍名列表
 const startTime = new Date("2017-12-02 23:00:00"); // 比赛开始时间
-const endTime = new Date("2017-12-02 23:30:00"); // 比赛结束时间
+const endTime = new Date("2017-12-22 23:30:00"); // 比赛结束时间
 const flagRefreshInterval = 15 * 60 * 1000; // Flag 刷新间隔 毫秒
 
 const redisClient = redis.createClient();
@@ -52,7 +54,7 @@ async function generateFlags(): Promise<{}> {
                 for (let t = startTime.valueOf(); t < endTime.valueOf(); t += flagRefreshInterval) {
                     counter++;
                     const sha256 = crypto.createHash("sha256");
-                    sha256.update(`${counter}f33601c10397b25e789c85bce5f2fbfd`);
+                    sha256.update(`${counter}${challengeName}${teamName}f33601c10397b25e789c85bce5f2fbfd`);
                     const flag = sha256.digest("hex");
                     // tslint:disable-next-line:max-line-length
                     await insertFlag(`hctf{${flag}}`, teamName, challengeName, new Date(t + 1).toISOString(), new Date(t + flagRefreshInterval).toISOString());
