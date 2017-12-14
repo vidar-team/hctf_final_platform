@@ -30,6 +30,11 @@ export class Flag extends BaseController {
                     const nowTime = new Date();
                     // tslint:disable-next-line:max-line-length
                     if (nowTime.valueOf() < new Date(result.validFrom).valueOf() || nowTime.valueOf() > new Date(result.validUntil).valueOf()) {
+                        Logger.debug("flag:submit", "admin", {
+                            teamName,
+                            flag,
+                            status: "expired",
+                        });
                         response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
                     } else {
                         // 成功提交 Flag

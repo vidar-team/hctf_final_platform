@@ -25,6 +25,7 @@ router.post("/Admin/index", verifyAdmin, (request: Request, response: Response) 
 router.post("/Flag/submit", verifyToken, Flag.submit.bind(Flag));
 router.get("/System/info", System.getSystemInfo.bind(System));
 router.get("/System/logs", System.getPublicLogs.bind(System));
+router.post("/System/logServerStatus", verifyAdmin, System.logServerStatus.bind(System));
 router.post("/System/setServerStatus", System.setServerStatus.bind(System));
 
 export default router;

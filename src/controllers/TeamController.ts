@@ -15,7 +15,7 @@ export class Team extends BaseController {
      * @param response
      */
     public list(request: Request, response: Response): void {
-        this.redisClient.scan("0", "MATCH", "team:*", "COUNT", "10000", async (error, result) => {
+        this.redisClient.scan("0", "MATCH", "team:*", "COUNT", "1000000", async (error, result) => {
             const teams = [];
 
             for (const teamKey of result[1]) {
@@ -130,8 +130,8 @@ export class Team extends BaseController {
      */
     public getServerStatus(request: Request, response: Response): void {
         const teamName = request.body.teamName;
-        this.redisClient.scan("0", "MATCH", `status:${teamName}:*`, "COUNT", "10000", (scanError, result) => {
-            console.log(result);
+        this.redisClient.scan("0", "MATCH", `status:${teamName}:*`, "COUNT", "1000000", (scanError, result) => {
+            console.log(teamName, result);
             if (result[1].length === 0) {
                 return response.json(APIResponse.success([]));
             } else {
