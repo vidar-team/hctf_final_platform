@@ -4,6 +4,7 @@
 import * as bcrypt from "bcryptjs";
 import * as crypto from "crypto";
 import * as redis from "redis";
+import Logger from "../services/Logger";
 
 // tslint:disable-next-line:max-line-length
 const challengeNames = ["HYPERION", "pwn0", "pwn1", "EASYCMS", "BIGBROTHER", "DELIVER"];  // 题目名列表
@@ -17,7 +18,7 @@ const tokens = [];
 const redisClient = redis.createClient();
 
 let nowStep = 0;
-const totalStep = 6;
+const totalStep = 7;
 
 const checkFinish = () => {
     if (nowStep === totalStep) {
@@ -74,6 +75,26 @@ async function generateFlags(): Promise<{}> {
 async function generateServerStatus(teamName: string, challengeName: string): Promise<{}> {
     return new Promise(async (resolve, reject) => {
         redisClient.set(`status:${teamName}:${challengeName}`, "up", (error, result) => {
+            resolve();
+        });
+    });
+}
+
+/**
+ * 生成初始分记录
+ * @param teamName
+ */
+async function generateScoreRecord(teamName: string, time: number): Promise<{}> {
+    return new Promise((resolve, reject) => {
+        redisClient.set(`log:public:${time.toString()}`, JSON.stringify({
+            type: "team:score",
+            level: 2,
+            data: {
+                teamName,
+                inc: 50000,
+                time: startTime.toISOString(),
+            },
+        }), (err) => {
             resolve();
         });
     });
@@ -147,8 +168,18 @@ if (teamNames.length > 0) {
             }
         });
     }
+    (async () => {
+        const nowTime = startTime.valueOf();
+        let counter = 0;
+        for (const teamName of teamNames) {
+            await generateScoreRecord(teamName, nowTime + counter++);
+        }
+    })().then(() => {
+        console.log(`初始化队伍初始分完成 [${++nowStep} / ${totalStep}]`);
+    });
 } else {
     console.log(`初始化队伍数据完成 [${++nowStep} / ${totalStep}]`);
+    console.log(`初始化队伍初始分完成 [${++nowStep} / ${totalStep}]`);
     checkFinish();
 }
 
@@ -158,6 +189,7 @@ if (teamNames.length > 0) {
             await generateServerStatus(teamName, challengeName);
         }
     }
+})().then(() => {
     console.log(`初始化服务器状态数据完成 [${++nowStep} / ${totalStep}]`);
     checkFinish();
-})();
+});
