@@ -32,6 +32,7 @@ class Logger {
             level,
             data,
         }));
+        console.log(channel, data);
         this.redisClient.publish(channel, JSON.stringify({
             type,
             level,

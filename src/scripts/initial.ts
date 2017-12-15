@@ -6,7 +6,7 @@ import * as crypto from "crypto";
 import * as redis from "redis";
 
 // tslint:disable-next-line:max-line-length
-const challengeNames = ["HYPERION"];  // 题目名列表
+const challengeNames = ["HYPERION", "pwn0", "pwn1"];  // 题目名列表
 // tslint:disable-next-line:max-line-length
 const teamNames = ["Team01", "Team02", "Team03", "Team04", "Team05", "Team06", "Team07", "Team08", "Team09", "Team10"]; // 队伍名列表
 const startTime = new Date("2017-12-16T01:00:00.000Z"); // 比赛开始时间

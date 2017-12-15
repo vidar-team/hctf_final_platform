@@ -22,7 +22,6 @@ export class Flag extends BaseController {
                 if (result === null) {
                     Logger.debug("flag:submit", "admin", {
                         teamName,
-                        flag,
                         status: "incorrect",
                     });
                     response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
@@ -32,7 +31,6 @@ export class Flag extends BaseController {
                     if (nowTime.valueOf() < new Date(result.validFrom).valueOf() || nowTime.valueOf() > new Date(result.validUntil).valueOf()) {
                         Logger.debug("flag:submit", "admin", {
                             teamName,
-                            flag,
                             status: "expired",
                         });
                         response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
@@ -43,7 +41,6 @@ export class Flag extends BaseController {
                             if (flagSubmitLog !== null) {
                                 Logger.debug("flag:submit", "admin", {
                                     teamName,
-                                    flag,
                                     status: "duplicated",
                                 });
                                 response.status(403).json(APIResponse.error("duplicated_flag", "Flag 已经提交过"));
@@ -54,7 +51,6 @@ export class Flag extends BaseController {
                                 Logger.info("flag:submit", "admin", {
                                     teamName,
                                     challengeName: result.challengeName,
-                                    flag,
                                     target: result.teamName,
                                     status: "correct",
                                 });
