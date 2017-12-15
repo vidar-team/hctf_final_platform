@@ -9,9 +9,10 @@ import * as redis from "redis";
 const challengeNames = ["HYPERION"];  // 题目名列表
 // tslint:disable-next-line:max-line-length
 const teamNames = ["Team01", "Team02", "Team03", "Team04", "Team05", "Team06", "Team07", "Team08", "Team09", "Team10"]; // 队伍名列表
-const startTime = new Date("2017-12-02 23:00:00"); // 比赛开始时间
-const endTime = new Date("2017-12-22 23:30:00"); // 比赛结束时间
+const startTime = new Date("2017-12-16T01:00:00.000Z"); // 比赛开始时间
+const endTime = new Date("2017-12-16T10:00:00.000Z"); // 比赛结束时间
 const flagRefreshInterval = 15 * 60 * 1000; // Flag 刷新间隔 毫秒
+const tokens = [];
 
 const redisClient = redis.createClient();
 
@@ -21,6 +22,7 @@ const totalStep = 6;
 const checkFinish = () => {
     if (nowStep === totalStep) {
         console.log(`初始化在 ${new Date().valueOf() - initialStartTime.valueOf()} ms 内完成`);
+        console.log(JSON.stringify(tokens, null, 2));
         process.exit(0);
     }
 };
@@ -54,7 +56,7 @@ async function generateFlags(): Promise<{}> {
                 for (let t = startTime.valueOf(); t < endTime.valueOf(); t += flagRefreshInterval) {
                     counter++;
                     const sha256 = crypto.createHash("sha256");
-                    sha256.update(`${counter}${challengeName}${teamName}f33601c10397b25e789c85bce5f2fbfd`);
+                    sha256.update(`${counter}${challengeName}${teamName}ceZD7QP@PzCL&QDQ%FuEJl&vCjW7KEJh`);
                     const flag = sha256.digest("hex");
                     // tslint:disable-next-line:max-line-length
                     await insertFlag(`hctf{${flag}}`, teamName, challengeName, new Date(t + 1).toISOString(), new Date(t + flagRefreshInterval).toISOString());
@@ -113,6 +115,10 @@ if (teamNames.length > 0) {
     for (const teamName of teamNames) {
         const password = bcrypt.hashSync(crypto.randomBytes(32).toString("hex"));
         const token = crypto.randomBytes(32).toString("hex");
+        tokens.push({
+            teamName,
+            token,
+        });
         redisClient.hget("name.team.mapping", teamName, (hgetError, result) => {
             if (result !== null) {
                 console.log("有队伍名已经被注册");
@@ -122,7 +128,7 @@ if (teamNames.length > 0) {
                         name: teamName,
                         password,
                         token,
-                        score: 0,
+                        score: 10000,
                     }, () => {
                         redisClient.hset("name.team.mapping", teamName, teamId.toString(), () => {
                             redisClient.hset("token.teamname.mapping", token, teamName, () => {
