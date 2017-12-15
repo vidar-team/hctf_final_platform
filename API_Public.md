@@ -4,7 +4,7 @@
 
 ## 提交 Flag
 
-`POST http://192.168.1.107:3000/Flag/submit`
+`POST http://192.168.1.110:3000/Flag/submit`
 
 **参数说明**
 
@@ -54,7 +54,7 @@
 
 ## 查询题目状态
 
-`GET http://192.168.1.107:3000/Team/status?token={token}`
+`GET http://192.168.1.110:3000/Team/status?token={token}`
 
 **参数说明**
 

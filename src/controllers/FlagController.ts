@@ -60,7 +60,9 @@ export class Flag extends BaseController {
                                 });
                                 // 加分
                                 this.increaseTeamScore(teamName, 10);
-                                this.increaseTeamScore(result.teamName, -10);
+                                if (teamName !== result.teamName) {
+                                    this.increaseTeamScore(result.teamName, -10);
+                                }
                                 response.json(APIResponse.success(result));
                             }
                         });
