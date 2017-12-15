@@ -11,7 +11,7 @@ const challengeNames = ["HYPERION", "pwn0", "pwn1", "EASYCMS", "BIGBROTHER", "DE
 // tslint:disable-next-line:max-line-length
 const teamNames = ["Team01", "Team02", "Team03", "Team04", "Team05", "Team06", "Team07", "Team08", "Team09", "Team10"]; // 队伍名列表
 const startTime = new Date("2017-12-16T01:00:00.000Z"); // 比赛开始时间
-const endTime = new Date("2017-12-16T10:00:00.000Z"); // 比赛结束时间
+const endTime = new Date("2017-12-17T06:00:00.000Z"); // 比赛结束时间
 const flagRefreshInterval = 15 * 60 * 1000; // Flag 刷新间隔 毫秒
 const tokens = [];
 
