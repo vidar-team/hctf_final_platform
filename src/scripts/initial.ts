@@ -56,7 +56,7 @@ async function generateFlags(): Promise<{}> {
                 for (let t = startTime.valueOf(); t < endTime.valueOf(); t += flagRefreshInterval) {
                     counter++;
                     const sha256 = crypto.createHash("sha256");
-                    sha256.update(`${counter}${challengeName}${teamName}ceZD7QP@PzCL&QDQ%FuEJl&vCjW7KEJh`);
+                    sha256.update(`${counter}${challengeName}${teamName}uSXSknXXxwH9NGYx77IR06AHnKzUky0l`);
                     const flag = sha256.digest("hex");
                     // tslint:disable-next-line:max-line-length
                     await insertFlag(`hctf{${flag}}`, teamName, challengeName, new Date(t + 1).toISOString(), new Date(t + flagRefreshInterval).toISOString());
