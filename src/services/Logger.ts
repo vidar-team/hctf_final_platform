@@ -31,14 +31,17 @@ class Logger {
             type,
             level,
             data,
-        }));
+        }), () => {
+            this.redisClient.publish(channel, JSON.stringify({
+                type,
+                level,
+                data,
+                time: new Date().toISOString(),
+            }), () => {
+                this.redisClient.quit();
+            });
+        });
         console.log(channel, data);
-        this.redisClient.publish(channel, JSON.stringify({
-            type,
-            level,
-            data,
-            time: new Date().toISOString(),
-        }));
     }
 }
 

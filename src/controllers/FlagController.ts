@@ -24,6 +24,7 @@ export class Flag extends BaseController {
                         teamName,
                         status: "incorrect",
                     });
+                    this.redisClient.quit();
                     response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
                 } else {
                     const nowTime = new Date();
@@ -33,6 +34,7 @@ export class Flag extends BaseController {
                             teamName,
                             status: "expired",
                         });
+                        this.redisClient.quit();
                         response.status(404).json(APIResponse.error("flag_not_found", "Flag 不存在"));
                     } else {
                         // 成功提交 Flag
@@ -43,10 +45,17 @@ export class Flag extends BaseController {
                                     teamName,
                                     status: "duplicated",
                                 });
+                                this.redisClient.quit();
                                 response.status(403).json(APIResponse.error("duplicated_flag", "Flag 已经提交过"));
                             } else {
                                 this.redisClient.hmset(`log:flag:submit:${teamName}-${flag}`, {
                                     time: new Date().toISOString(),
+                                }, () => {
+                                    this.increaseTeamScore(teamName, 10).then(() => {
+                                        this.increaseTeamScore(result.teamName, -10).then(() => {
+                                            this.redisClient.quit();
+                                        });
+                                    });
                                 });
                                 Logger.info("flag:submit", "admin", {
                                     teamName,
@@ -55,8 +64,6 @@ export class Flag extends BaseController {
                                     status: "correct",
                                 });
                                 // 加分
-                                this.increaseTeamScore(teamName, 10);
-                                this.increaseTeamScore(result.teamName, -10);
                                 response.json(APIResponse.success(result));
                             }
                         });
