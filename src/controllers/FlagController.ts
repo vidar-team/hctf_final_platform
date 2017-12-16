@@ -16,6 +16,7 @@ export class Flag extends BaseController {
         const teamName = request.body.teamName;
         const flag = request.query.flag || request.body.flag;
         if (!flag) {
+            this.redisClient.quit();
             response.status(400).json(APIResponse.error("missing_parameters", "缺少参数"));
         } else {
             this.redisClient.hgetall(`flag:${flag}`, (error, result) => {
