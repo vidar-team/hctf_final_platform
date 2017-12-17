@@ -55,8 +55,8 @@ export class Flag extends BaseController {
                                     status: "correct",
                                 });
                                 // 加分
-                                this.increaseTeamScore(teamName, 10);
-                                this.increaseTeamScore(result.teamName, -10);
+                                this.increaseTeamScore(teamName, 20);
+                                this.increaseTeamScore(result.teamName, -20);
                                 response.json(APIResponse.success(result));
                             }
                         });

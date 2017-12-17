@@ -17,7 +17,7 @@ export class System extends BaseController {
         })().then(() => {
             const startTime = new Date(result[0]); // 比赛开始时间
             const endTime = new Date(result[1]); // 比赛结束时间
-            const flagRefreshInterval = 15 * 60 * 1000; // Flag 刷新间隔 毫秒
+            const flagRefreshInterval = 10 * 60 * 1000; // Flag 刷新间隔 毫秒
             const nowTime = new Date();
             const round = Math.floor((nowTime.valueOf() - startTime.valueOf()) / flagRefreshInterval) + 1;
             response.json(APIResponse.success({
